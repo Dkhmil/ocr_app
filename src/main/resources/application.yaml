@@ -1,0 +1,11 @@
+# Tesseract OCR data path (folder containing tessdata)
+# Set this to the directory that contains the 'tessdata' folder, e.g.
+# Windows example: C:\\Program Files\\Tesseract-OCR
+# Linux example: /usr/share/tesseract-ocr
+# If left empty, Tess4J will try its defaults / system path.
+tesseract:
+  datapath: ""
+
+# Default server port (optional)
+# server:
+#   port: 8080

@@ -1,0 +1,31 @@
+# Single-stage Dockerfile for faster local development
+# This skips the Maven build and expects you to build the JAR locally first
+# Usage: mvn clean package && docker build -f Dockerfile.dev -t ocr-app:dev .
+
+FROM eclipse-temurin:21-jre-jammy
+
+# Install Tesseract OCR and dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-ukr \
+    ghostscript \
+    poppler-utils \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy the pre-built JAR
+COPY target/*.jar app.jar
+
+# Create directory for temporary PDF processing
+RUN mkdir -p /tmp/ocr && chmod 777 /tmp/ocr
+
+EXPOSE 8080
+
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

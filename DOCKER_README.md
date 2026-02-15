@@ -1,6 +1,6 @@
 # OCR App - Docker Setup
 
-This Spring Boot application provides OCR functionality for PDF files using Tesseract.
+This Spring Boot application provides OCR functionality for PDF files using OCRmyPDF (with Tesseract).
 
 ## Prerequisites
 
@@ -50,7 +50,8 @@ docker stop ocr-app && docker rm ocr-app
 # Upload a PDF for OCR processing
 curl -X POST \
   -F "file=@/path/to/your/document.pdf" \
-  http://localhost:8080/api/ocr \
+  -F "lang=eng+ukr" \
+  http://localhost:8080/v1/ocr \
   --output searchable-output.pdf
 ```
 
@@ -62,9 +63,10 @@ curl -X POST \
 - `JAVA_OPTS`: JVM options (default: `-Xmx1g -Xms512m`)
 - `TESSDATA_PREFIX`: Tesseract data directory (set automatically)
 
-### Tesseract Languages
+### OCR Languages
 
-The Dockerfile includes English and Ukrainian language packs. To add more languages:
+The Dockerfile includes English and Ukrainian language packs. Use API `lang` like `eng`, `ukr`, or `eng+ukr`.
+To add more languages:
 
 1. Edit the Dockerfile and add the desired language pack:
    ```dockerfile
@@ -121,11 +123,13 @@ services:
    - Increase Docker container memory limit
 
 2. **Tesseract Not Found**
+   - Check if OCRmyPDF is installed: `docker exec ocr-app ocrmypdf --version`
    - Verify `TESSDATA_PREFIX` is set correctly
    - Check if Tesseract is installed: `docker exec ocr-app tesseract --version`
+   - Check language data exists: `docker exec ocr-app ls /usr/share/tessdata/eng.traineddata`
 
 3. **PDF Processing Fails**
-   - Ensure Ghostscript is installed (included in Dockerfile)
+   - Ensure OCRmyPDF is installed (included in Dockerfile)
    - Check file permissions on `/tmp/ocr` directory
 
 ### Debug Mode
@@ -147,4 +151,4 @@ docker run -p 8080:8080 \
 
 ## Image Size
 
-Expected image size: ~400-500MB (including Tesseract and all dependencies)
+Expected image size: ~700-1000MB (including OCRmyPDF, Tesseract, and all dependencies)

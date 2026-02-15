@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ocr-service:
     build:
@@ -11,6 +9,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - JAVA_OPTS=-Xmx1g -Xms512m
+      - TESSDATA_PREFIX=/usr/share/tessdata/
     volumes:
       # Optional: mount a volume for persistent storage or large file processing
       - ./uploads:/tmp/ocr

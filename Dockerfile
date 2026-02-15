@@ -15,15 +15,20 @@ RUN mvn clean package -DskipTests
 # Stage 2: Runtime image
 FROM eclipse-temurin:21-jre-jammy
 
-# Install Tesseract OCR and dependencies
+# Install OCRmyPDF and OCR runtime dependencies
 RUN apt-get update && \
     apt-get install -y \
-    tesseract-ocr \
+    ocrmypdf \
     tesseract-ocr-eng \
     tesseract-ocr-ukr \
-    ghostscript \
-    poppler-utils \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Normalize tessdata path across distro package versions (e.g. 4.00 vs 5).
+RUN set -eux; \
+    TESSDATA_DIR="$(find /usr/share -type d -path '*/tessdata' | head -n 1)"; \
+    test -n "$TESSDATA_DIR"; \
+    ln -s "$TESSDATA_DIR" /usr/share/tessdata
 
 # Create app directory
 WORKDIR /app
@@ -38,7 +43,7 @@ RUN mkdir -p /tmp/ocr && chmod 777 /tmp/ocr
 EXPOSE 8080
 
 # Set environment variables
-ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+ENV TESSDATA_PREFIX=/usr/share/tessdata/
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Run the application

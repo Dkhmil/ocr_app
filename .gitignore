@@ -1,0 +1,32 @@
+# Build output
+target/
+out/
+
+# Maven
+.mvn/timing.properties
+dependency-reduced-pom.xml
+
+# IntelliJ / JetBrains
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local runtime / temp artifacts
+uploads/
+*.pdf
+
+# Environment files
+.env
+.env.*
+
+# Docker local overrides
+docker-compose.override.yml

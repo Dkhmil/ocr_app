@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+app:
+  ocr:
+    command: "ocrmypdf --skip-text %s %s"
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
